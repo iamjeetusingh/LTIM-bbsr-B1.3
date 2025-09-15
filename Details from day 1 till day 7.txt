@@ -1,0 +1,630 @@
+/
+	- /bin	- contains the command binaries of regular user.
+	- /sbin - contains the command bin for ROOT user.
+	- /boot - 350MB --> 500MB, contains bootable files (vmlinuz.img)
+	- /dev  - contains device related files
+				- sda - SCSI Disk A
+					- /dev/sda1
+					- /dev/sda2
+	- /etc	- contains all the system-wide config files
+				- username --> /etc/passwd
+				- password --> /etc/shadow --> passwd
+				- Network  --> /etc/sysconfig/network-script/ifcfg-eth0
+				- SELinux  --> /etc/selinux/config
+	- /home	- contains home directory of regular users
+				- jeetu --> /home/jeetu
+				- joker	--> /home/joker
+	- /root	- this is the home directory for ROOT user.
+	- /lib	- library for developers (/libx64)
+	- /mnt	- mount point (new -> /run/media)
+	- /var	- contains all the LOG files in it. (/var/log)
+	- /tmp	- contains temporary files
+	- /proc	- running process info
+				Memory - /proc/meminfo (free)
+				CPU	   - /proc/cpuinfo (lscpu)
+	- /usr	- contains user installed applications
+	- /run	- contains all the running program data.
+				CD/DVD - /run/media/<username>/Centos....
+				
+File mgmt
+	- create
+		- touch 
+			- blank files, 
+			- update the timestamp (last access time)
+		- cat
+			- create
+				# cat > filename.txt
+			- list
+				# cat  filename.txt
+			- override - removes the existing content from file.
+				# cat > filename.txt
+			- append
+				# cat >> filename.txt
+		- nano
+			- for ubuntu
+		- gedit
+			- similar to notepad in windows
+		- vi/vim
+			- its the most powerfull editor.
+	- modify
+	- delete
+Directory mgmt
+	- create
+	- delete
+	- change a directory
+	
+	
+Swap -> 1.5xRAM
+	 -> 2xRAM
+	 
+	 
+cat --> list the contents of a FILE, data written in the file.
+
+ls  --> list the contents(file or folder), within a directory.
+
+
+
+.	-> current directory
+..	-> parent directory
+
+cd ..
+
+Permissions:
+---------------
+read	-	r	-	4
+write	-	w	-	2
+execute	-	x	-	1
+--------------------------
+total			-	7
+--------------------------
+
+where to apply these permissions?
+	- owner (u)
+	- group	(g)
+	- other	(o)
+	------------
+		all (a)
+	------------
+	
+Commands:
+-----------
+to change the permission of a file/directory
+	# chmod    <perms>     <file/directory>
+	
+to change the owner of a file/directory
+	# chown    <owner-name>   <file/directory>
+	
+to change the group owner <file/directory>
+	# chgrp    <group-name>   <file/directory>
+	
+to list the detailed permissions
+	# ls -l     or
+	# ll
+	
+#################################################################
+Note - in linux when a user is created, a group with the same 
+username also gets created. 
+#################################################################
+	
+to change the permissions:
+--------------------------
+	1. numerical method
+		# we use the numbers to change the permissions
+			- 4, 2, 1, 7
+	2. symbolical method
+		# we use alpha, symbols
+			r, w, x, u, g, o, a
+		# symbols
+			+, -, =
+			
+			
+ACL
+-------
+	- Access Control List
+	- its the advance way to give/take the permissions on a granular level
+	- commands:
+		1. getfacl -> to list the current permissions
+		2. setfacl -> to change the permissions
+			user	-> # setfacl  -m   u:<username>:<permission> filename
+			group	-> # setfacl  -m   g:<groupname>:<permission> filename
+			
+			to remove the ACL	
+				# setfacl  -b filename
+				
+Tasks
+------------
+1. create a user with your last name and give it admin access equivalent to ROOT user.
+
+2. create a user with the following details in a single (useradd command)
+	- username		: rocky
+	- user id		: 5000
+	- comment		: Silvester
+	- default shell	: /bin/sh
+	
+3. create a group name ltidemo with 3 users (duser1, duser2 and duser3) and give them RWX permissions on a new directory "/demo" and verify.
+Now, remove the "write" access of duser2 from the same directory without removing the user from the group.
+
+4. display the following values using commands:
+	- name of your linux system
+	- ip address of you system.
+	- free and available RAM 
+	
+	
+Storage mgmt:
+----------------
+file system
+	- EXT2
+	- EXT3
+	- EXT4
+	- XFS (default)
+	- CramFS
+	- BtrFS
+	
+command to change the file system --> mkfs.<fs>
+	- mkfs.xfs
+	- mkfs.ext2
+	- mkfs.ext3
+	- mkfs.ext4
+	
+Commands to manage the storage in linux
+	- du	- to display the size of the directory
+	- df	- list all the active mounted partitions
+	- fdisk	- to create, modify, delete a new partition
+	- lsblk	- it lists all the block/HDD drives with partitions
+	- blkid	- lists the UUID (unique) ID of the partitions
+	- mount	- it mounts the partition (temporary mount)
+	- /etc/fstab	- a file to mount the partitions permanently
+	- umount - it unmounts the partition.
+	
+ways to add the disk
+	- Standard partitioning	- you can add only FIXED size HDD.
+	- LVM - this can be extended, its dynamic in nature.
+	- RAID - Redundant Array of Independent Disk
+			- RAID 0 - stripping
+			- RAID 1 - mirroring
+			- RAID 5 - stripping with single parity
+			- RAID 6 - stripping with dual parity
+			
+LVM - supports various disks size --> 5, 10, 15, ....
+RAID - disk size must be IDENTICAL
+
+Standard partitioning:
+----------------------
+	- add a new disk to the linux system.
+	- create partition using fdisk utility
+		# fdisk   <full-disk-name>
+		# fdisk   /dev/sdb
+			- press "m" - list all the details
+			- press	"n" - new a partition
+			- press "p" - for primary partition
+			- press "1" - for /dev/sdb1
+			- press "enter" - 1st sector of HDD
+			- press "enter" - for last sector
+			- press "w" - for save & quit.
+			
+	- create a file system for the partition using mkfs.xfs
+		#mkfs.xfs   /dev/sdb1
+		
+	- create a mount point using mkdir cmd
+		# mkdir     /ltib13std
+	
+	- mount the partition
+		- temporary using mount cmd
+			# mount     <what to mount>    <where to mount>
+			# mount     /dev/sdb1      /ltib13std
+			
+			
+		- permanently using /etc/fstab file.
+	- and verify.
+		# mount -a
+		
+To delete the partition
+	- unmount the mounted partition using umount command
+	- delete the directory using "rm -rf /ltib13std"
+	- delete the partition using fdisk
+		press "d"
+		press "w"
+	- remove the physical HDD(s).
+	
+LVM (Logical Volume Partition):
+-----------------------------------
+	- add a new disk to the linux system.
+	- create partition using fdisk utility
+	- create a physical volume (PV) using cmd: pvcreate
+	- create a volume group (VG) using cmd: vgcreate
+	- create a logical volume (LV) using cmd: lvcreate
+	- create a file system for the partition using mkfs.xfs
+	- create a mount point using mkdir cmd
+	- mount the partition
+		- temporary using mount cmd
+		- permanently using /etc/fstab file.
+	- and verify.
+		# mount -a
+		
+LVM
+	- LVM provides a dynamic disk for the linux OS
+	- its a production level solution for any env.
+	- with LVM, we can merge multiple disks into a single logical unit.
+
+
+Steps for LVM:
+	- add disk
+	- create 2 partitions of 10GB each
+		- /dev/sdb	--->  /dev/sdb1
+		- /dev/sdc  --->  /dev/sdc1
+	- create physical volume (pv)
+		# pvcreate   /dev/sdb1    /dev/sdc1
+	- create volume group (vg)
+		# vgcreate   vg   /dev/sdb1    /dev/sdc1
+	- create logical volume (lv)
+		# lvcreate  -n  lv  -L +19G  vg				//OR
+		# lvcreate  -n  lv  -l 100%FREE  vg
+			-n = name of the LV
+			-l = length of the LV (in %)
+			-L = length of the LV (in GBs)
+	- make file system
+		# mkfs.ext4    /dev/vg/lv
+	- create a mount point
+		# mkdir   /lvm
+	- mount the LVM partition
+		# mount  /dev/vg/lv   /lvm
+	- verify
+		# df -h
+		# df -hT
+		
+RAID
+-----------------------------------------
+	- Redundant Array of Independent Disks
+	- its the collection of IDENTICAL disks sizes are required.
+	- types:
+		- RAID 0
+			- aka stripping
+			- in this, minimum of 2 identical disks are needed
+			- while write (saving the data in disk), data gets stripped/divided and gets stored in all the present disks.
+			- this makes RAID 0 
+				- faster in writing
+				- slower in reading
+			- total data loss, even if one disk is crashed.
+		
+		- RAID 1
+			- aka mirroring
+			- data gets copies on another disks immed.
+			- it requires minimum of 2 identical HDDs
+			- adv: even if one disk is crashed, data can be still retrieved.
+			- disadv: only 50% is the actual disk usage.
+			
+		- RAID 5
+			- aka stripping with single parity
+			- it requires minimum of 3 identical HDDs
+
+Package mgmt:
+-----------------
+in windows 	= softwares
+in linux 	= packages
+
+Naming convention:
+---------------------
+	name-version-release-architecture.extension
+	
+		
+	architecture
+		- i686		=	32bit architecture
+		- x86_64	=	64bit
+		- noarch	=	both (32 & 64)
+		
+	extension
+		- rpm	= Redhat Package Manager
+		- deb	= Debian-based package
+		- dpkg	= Debian-based package
+	
+Package Manager
+---------------
+	- it manages
+		- installation
+		- updating/upgradation
+		- fetching the information
+		- removing 
+	- list of package managers
+		- RPM - Redhat Package Manager		- Redhat, Centos
+		- YUM - Yellowdog Updater Modifier	- Redhat, Centos
+		- DNF - Dandified Package Manager	- Redhat, Centos
+		- APT - Advanced Packaging Tool		- Ubuntu
+		- DPKG 								- Kali, Backtrack
+		- YaST								- Suse
+	- for windows
+		- NuGet
+		- PowerShell
+		- chocolatey
+	
+	command:
+		# yum install <package-name>	--> redhat, centos
+		# apt install <package-name>	--> ubuntu
+		
+Source for the packages:
+--------------------------
+	- Offline
+		- pre-downloaded
+		- CD/DVD
+	- Online
+		- Centos => Mirror repositories (free)
+		- Redhat => Redhat Network (RSS) - Paid
+	
+Redhat Package Manager:
+------------------------
+	- its the default package manager in Redhat & Centos
+- install
+	# rpm   -ivh   <full-package-name>.rpm
+		i = install
+		v = verbose (display the bg working on terminal)
+		h = hashing	(#######################)
+- update
+	# rpm   -Uvh   <full-package-name>.rpm
+		U = Update
+		v = verbose (display the bg working on terminal)
+		h = hashing	(#######################)
+- information/query
+	# rpm -q <package-name>
+	# rpm -qa
+- remove/uninstall
+	# rpm -e <package-name>
+	# rpm -ev <package-name>
+	
+Yellowdog Updater Modifier:
+------------------------------
+- install
+	# yum install <package-name>
+- update
+	# yum update <package-name>
+- information/query
+	# yum info <package-name>
+- remove/uninstall
+	# yum remove <package-name>
+- to list all the installed packages
+	# yum list installed
+	
+RPM problems:
+	1. you need to provide full path of the package.
+	2. you need to provide full name of the package.
+	3. dependency
+	
+to install a package:
+	- identify if the package is installed.
+		# rpm -q package-name
+		# rpm -q squid				//or
+		# rpm -qa | grep squid
+		
+NTP:
+-----------
+	- Network Time Protocol
+	- it is used for syncing time on all the systems within the network.
+	- it syncs from "https://www.ntppool.org/en/"
+	- package required for installing NTP: ntp
+	- Port number for ntp: 123/udp
+	- service config file: /etc/ntp.conf
+	- service name: ntpd (Network Time Protocol Daemon)
+	
+SELinux:
+-----------
+	- Security Enhanced Linux
+	- it protects the linux kernel from getting modified.
+	- the default mode/result of SELinux is to deny the modifications
+	- Commands for managing SELinux:
+		1. getenforce - this lists the current selinux mode.
+		2. setenforce - this changes the selinux temporary (restart)
+	- config file of SELinux - /etc/selinux/config
+	- Modes of SELinux:
+		1. Enforcing 	- completely active
+		2. Permissive	- partial active
+		3. Disabled		- turned-off
+
+Service Mgmt:
+-----------------
+# systemctl  <action>  <service-name>
+# service    <service-name> <action>		//old way to manage service
+action:
+	- enable		//start after restarting the system.
+	- start			//at that moment, start the service.
+	- disable
+	- stop
+	- restart
+	- is-active
+	- status
+	
+service-name:
+	- network
+	- NetworkManager
+	- sshd
+	- ntpd
+	- httpd
+	- vsftpd
+	- firewalld
+	
+Server configuration
+===========================
+- package name		: 
+- configuration file: 
+- port number		: 
+- service name		: 
+
+File sharing services:
+-----------------------
+	- FTP	- CLI
+	- NFS	- similar OS (W-W & L-L)
+	- Samba	- cross OS (W-L) & (L-L)
+	
+NFS
+	- Network File Sharing
+	- package name		: rpcbind, nfs-utils
+	- configuration file: /etc/exports
+	- port number		: 2049, 111
+	- service name		: nfs-server, rpcbind
+	
+Samba
+	- package name		: samba, cifs-utils
+	- configuration file: /etc/samba/smb.conf
+	- port number		: 139, 445
+	- service name		: smb
+
+
+NFS server configuration:
+----------------------------
+on server
+	- install the package (nfs-server & rpcbind)
+	- create nfs share folder
+	- edit the configuration file (/etc/exports)
+	- enable, start and check the status of nfs-server & rpcbind services
+	- exportfs
+	
+on client
+	- install the package (nfs-server & rpcbind)
+	- create nfs client share folder
+	- enable, start and check the status of nfs-server & rpcbind services
+	- mount the server folder on client (mount)
+	- verify (df -h)
+	
+FTP server:
+---------------
+- it helps in uploading and downloading of the files from the server.
+- number of machines required: 2 (1 minimum)
+- on server:
+	- install the package 
+	- create some users who can access the FTP service
+	- edit the configuration file
+	- enable, start and check the status of the service
+- on client OR server
+	- access the FTP console from the terminal
+	- upload/download the file(s)
+Requirements:
+	- package name		: ftp, vsftpd
+	- configuration file: /etc/vsftpd/vsftpd.conf
+	- port number		: 20, 21
+	- service name		: vsftpd
+	
+
+Apache web server
+-------------------
+- it helps in hosting a linux based website
+- you can host the site either in a private network or publicly.
+
+Requirements:
+	- package name		: httpd
+	- configuration file: /etc/httpd/conf/httpd.conf
+	- port number		: 80 (HTTP), 443 (HTTPS)
+	- service name		: httpd
+	
+Samba server:
+-------------------
+- it is used for sharing the data between linux and windows OS (Cross-Platform data sharing)
+Requirements:
+	- package name		: samba, cifs-utils
+	- configuration file: /etc/samba/smb.conf
+	- port number		: 139, 445
+	- service name		: smb
+	
+On server
+------------
+	- check hostname & change it to server.
+	- check firewall and disable if its on.
+	- check selinux and disable if its on.
+	- configure yum server properly.
+		- check for AppStream and BaseOS with spellings.
+	
+On client
+------------
+	- check hostname & change it to client.
+	- check firewall and disable if its on.
+	- check selinux and disable if its on.
+	- configure yum server properly.
+		- check for AppStream and BaseOS with spellings.
+
+
+For any configuration issue:
+	- check if the package is install, else install it.
+	- create a backup of the original config file.
+	- add/modify the configuration file.
+	- enable, start/restart the service.
+	- check the status of the service.
+	
+DNS:
+---------
+	- Domain Name Service
+	- Port No: 53/tcp & 53/udp
+
+- DNS records:
+	- A record		= IPv4 IP address
+	- AAAA record 	= IPv6 IP address
+	- SOA record	= start of authority
+	- PTR record	= Pointer record 
+	- MX record		= Mail exchange 
+	- NS record		= Name server
+	- CNAME record	= Canonical Name (alias)
+	
+Requirements:
+-----------------
+- package name		: bind, bind-utils
+- configuration file: /etc/named.conf	(main config file)
+						- /var/named/forward.domain.name (create)
+						- /var/named/reverse.domain.name (create)
+- port number		: 53/tcp & 53/udp
+- service name		: named
+
+
+Send Mail:
+------------
+	- MTA
+		- Mail Transfer Agent
+		- used for sending and receiving emails
+	- MUA
+		- Mail User Agent
+		- apps (Outlook, Hotmail, Gmail)
+	- MDA
+		- Mail Delivery Agent
+		- delivers the email.
+		
+Packages
+	- Postfix 	--> sending email
+	- Dovcot	--> receiving email
+	
+Tasks
+-------------------------------------------------------------
+- configure yum on server and client
+- perform the following:
+	- disable SELinux
+	- verify the status of firewall and disable it.
+	- display:
+		- IP Address
+		- DNS address
+		- Kernel version
+		- logged in username
+		- current working directory
+		- current runlevel
+		- currently mounted partitions
+		- size of /var (in human readable format).
+		- installed OS name
+		- first process
+		- Total Memory and CPU information
+		- Number of packages in /var/ftp/pub
+		- current working shell
+	- create a volume group of 20GB by following the standard procedure and use this VG and create 2 LVMs with 12GB (of EXT4 file system) and mount it at /std01 and 8GB with XFS file system and mount it at /std02.
+	- extend the 8GB LVM to a total of 15GB by adding approproiate size and verify.
+	- create a standard partition of 5GB with XFS file system and mount it on /sharedDir.
+	- create a directory in /sharedDir and allow the following.
+		- RWX permission to owner and group.
+		- no read, no write and no execute permissions to others.
+		- allow read only access to HR group (create HR group, if not present). 
+		- allow read-write access to sales group (create, if not done already).
+	- verify FTP server and remove/uninstall FTP if already installed. configure and access data using FTP.
+	- create an HTTP website using the following code:
+		<html>
+		<body bgcolor='pink'>
+		<h1 align='center'>
+		Hello Demo
+		<h1 />
+		</body>
+		</html>
+	- enable firewall and add the following port numbers and services to it and verify:
+		- 80, 443, 22, 123, samba
+	- use linux send mail server to send and receive email from it. 
+	- create a new directory /sambashare and access it on windows and verify if you are able to read and write the contents/files on it.
+	- use NMTUI to change (on server and client):
+		- hostname to server.ltimindtree.com
